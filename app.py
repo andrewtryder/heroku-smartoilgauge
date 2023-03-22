@@ -1,17 +1,29 @@
-from flask import Flask
-from datetime import datetime
+from selenium import webdriver
+from pyvirtualdisplay import Display
+from webdriver_manager.chrome import ChromeDriverManager
 import os
 
-app = Flask(__name__)
+user_name = os.environ['SMARTOIL_USERNAME']
+password = os.environ['SMARTOIL_PASSWORD']
 
-@app.route('/')
-def homepage():
-    the_time = datetime.now().strftime("%A, %d %b %Y %l:%M %p")
+display = Display(visible=0, size=(800, 600))
+display.start()
 
-    return """
-    <h1>Hello heroku</h1>
-    <p>It is currently {time}.</p>
-    """.format(time=the_time)
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
 
-if __name__ == '__main__':
-    app.run(debug=True, use_reloader=True)
+browser = webdriver.Chrome(ChromeDriverManager().install(),options=options)
+browser.set_window_size(1440, 900)
+
+browser.get("https://app.smartoilgauge.com/app.php")
+browser.find_element_by_id("inputUsername").send_keys(user_name)
+browser.find_element_by_id("inputPassword").send_keys(password)
+browser.find_element_by_css_selector("button.btn").click()
+browser.implicitly_wait(3)
+
+nav = browser.find_element_by_xpath('//p[contains(text(), "/")]').text
+nav_value = nav.split(r"/")
+browser.quit()
+print("{0}".format(nav_value[0]))
+
+display.stop()
