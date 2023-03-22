@@ -1,6 +1,5 @@
 from selenium import webdriver
 from pyvirtualdisplay import Display
-from webdriver_manager.chrome import ChromeDriverManager
 import os
 
 user_name = os.environ['SMARTOIL_USERNAME']
@@ -9,10 +8,13 @@ password = os.environ['SMARTOIL_PASSWORD']
 display = Display(visible=0, size=(800, 600))
 display.start()
 
-options = webdriver.ChromeOptions()
-options.add_argument('--headless')
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--no-sandbox")
+browser = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
-browser = webdriver.Chrome(ChromeDriverManager().install(),options=options)
 browser.set_window_size(1440, 900)
 
 browser.get("https://app.smartoilgauge.com/app.php")
