@@ -18,12 +18,12 @@ browser = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), 
 browser.set_window_size(1440, 900)
 
 browser.get("https://app.smartoilgauge.com/app.php")
-browser.find_element_by_id("inputUsername").send_keys(user_name)
-browser.find_element_by_id("inputPassword").send_keys(password)
-browser.find_element_by_css_selector("button.btn").click()
+browser.find_element(By.ID,"inputUsername").send_keys(user_name)
+browser.find_element(By.ID,"inputPassword").send_keys(password)
+browser.find_element(By.CSS_SELECTOR,"button.btn").click()
 browser.implicitly_wait(3)
 
-nav = browser.find_element_by_xpath('//p[contains(text(), "/")]').text
+nav = browser.find_element(By.XPATH, '//p[contains(text(), "/")]').text
 nav_value = nav.split(r"/")
 browser.quit()
 print("{0}".format(nav_value[0]))
