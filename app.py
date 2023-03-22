@@ -1,6 +1,5 @@
 from flask import Flask
 from datetime import datetime
-from selenium import webdriver
 import os
 
 app = Flask(__name__)
