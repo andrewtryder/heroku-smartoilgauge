@@ -17,13 +17,16 @@ password = os.environ['SMARTOIL_PASSWORD']
 
 options = webdriver.ChromeOptions()
 options.add_argument("headless")
-options.add_argument('disable-dev-shm-usage')
+options.add_argument('disable-dev-shm-usage') # added in order to avoid the error session deleted because of page crash
 options.add_argument('no-sandbox')
 options.add_argument("window-size=1920,1080")  # need this for the code to work. Some sites don't render properly with headless.
 
 # service = Service(r"C:\chromedriver.exe")
-service = Service(os.environ['CHROMEDRIVER_PATH'])
-browser = webdriver.Chrome(service=service, options=options)
+try:
+    service = Service(os.environ['CHROMEDRIVER_PATH'])
+    browser = webdriver.Chrome(service=service, options=options)
+except Exception as err:
+    notifier.notify("ERROR starting chrome: {0}".format(err))
 
 # now do the actual login to smartoilgauge.
 smartoilgaugeUrl = "https://app.smartoilgauge.com/app.php"
