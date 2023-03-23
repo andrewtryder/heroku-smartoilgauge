@@ -1,5 +1,4 @@
 Flask
 gunicorn
 selenium
-pyvirtualdisplay
 pybrake
