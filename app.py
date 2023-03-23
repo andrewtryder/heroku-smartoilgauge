@@ -1,12 +1,10 @@
 from selenium import webdriver
-from pyvirtualdisplay import Display
+from selenium.webdriver.common.by import By
+
 import os
 
 user_name = os.environ['SMARTOIL_USERNAME']
 password = os.environ['SMARTOIL_PASSWORD']
-
-#display = Display(visible=0, size=(800, 600))
-#display.start()
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
@@ -27,5 +25,3 @@ nav = browser.find_element(By.XPATH, '//p[contains(text(), "/")]').text
 nav_value = nav.split(r"/")
 browser.quit()
 print("{0}".format(nav_value[0]))
-
-#display.stop()
