@@ -1,5 +1,8 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+
 import pybrake
 import os
 
@@ -12,19 +15,19 @@ notifier = pybrake.Notifier(project_id=488883,
 user_name = os.environ['SMARTOIL_USERNAME']
 password = os.environ['SMARTOIL_PASSWORD']
 
-# setup our Chrome webdriver and go.
-chrome_options = webdriver.ChromeOptions()
-chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--no-sandbox")
-browser = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+options = webdriver.ChromeOptions()
+options.add_argument("headless")
+options.add_argument('disable-dev-shm-usage')
+options.add_argument('no-sandbox')
+options.add_argument("window-size=1920,1080")  # need this for the code to work. Some sites don't render properly with headless.
 
-# do we need this set window size?
-browser.set_window_size(1440, 900)
+# service = Service(r"C:\chromedriver.exe")
+service = Service(os.environ['CHROMEDRIVER_PATH'])
+browser = webdriver.Chrome(service=service, options=options)
 
 # now do the actual login to smartoilgauge.
-browser.get("https://app.smartoilgauge.com/app.php")
+smartoilgaugeUrl = "https://app.smartoilgauge.com/app.php"
+browser.get(smartoilgaugeUrl)
 browser.find_element(By.ID,"inputUsername").send_keys(user_name)
 browser.find_element(By.ID,"inputPassword").send_keys(password)
 browser.find_element(By.CSS_SELECTOR,"button.btn").click()
@@ -32,6 +35,7 @@ browser.implicitly_wait(3)
 
 # specifically find text with a '/' and split on that. 
 nav = browser.find_element(By.XPATH, '//p[contains(text(), "/")]').text
+print(nav)
 nav_value = nav.split(r"/")
 
 # quit the browser.
